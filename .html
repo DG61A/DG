@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GameZone - Loja Gamer</title>
+<link rel="stylesheet" href="style.css"> <!-- Aqui linka o CSS -->
+</head>
+<body>
+
+<header>
+    <h1>🎮 GAMEZONE 🎮</h1>
+    <p>A melhor loja de games do Brasil</p>
+</header>
+
+<nav>
+    <button onclick="filtrar('Todos')">Todos</button>
+    <button onclick="filtrar('Jogo')">Jogos</button>
+    <button onclick="filtrar('Controle')">Controles</button>
+    <button onclick="filtrar('Headset')">Headsets</button>
+    <button onclick="filtrar('Mouse Gamer')">Mouse Gamer</button>
+    <button onclick="filtrar('Cadeira')">Cadeiras</button>
+</nav>
+
+<div class="container">
+    <div class="produtos" id="produtos"></div>
+
+    <div class="carrinho">
+        <h2>🛒 Carrinho</h2>
+        <div id="itens-carrinho">Vazio</div>
+        <div class="total" id="total">Total: R$ 0.00</div>
+        <button class="btn-comprar" onclick="finalizar()">Finalizar Compra</button>
+    </div>
+</div>
+
+<footer>
+    <p>© 2026 GameZone - Todos os direitos reservados</p>
+</footer>
+
+<script>
+    const produtos = [
+        {id:1, nome:"EA FC 25 PS5", cat:"Jogo", preco:349.90},
+        {id:2, nome:"GTA VI", cat:"Jogo", preco:399.90},
+        {id:3, nome:"The Last of Us 2", cat:"Jogo", preco:249.90},
+        {id:4, nome:"Controle PS5 DualSense", cat:"Controle", preco:449.90},
+        {id:5, nome:"Controle Xbox Series", cat:"Controle", preco:429.90},
+        {id:6, nome:"Headset HyperX Cloud II", cat:"Headset", preco:699.90},
+        {id:7, nome:"Headset Razer Kraken", cat:"Headset", preco:499.90},
+        {id:8, nome:"Mouse Logitech G Pro X", cat:"Mouse Gamer", preco:599.90},
+        {id:9, nome:"Mouse Redragon Cobra", cat:"Mouse Gamer", preco:149.90},
+        {id:10, nome:"Cadeira Gamer ThunderX3", cat:"Cadeira", preco:1299.90},
+        {id:11, nome:"Cadeira Gamer Husky Gaming", cat:"Cadeira", preco:899.90}
+    ];
+
+    let carrinho = [];
+    let categoriaAtual = "Todos";
+
+    function carregarProdutos() {
+        const div = document.getElementById("produtos");
+        div.innerHTML = "";
+        produtos
+        .filter(p => categoriaAtual === "Todos" || p.cat === categoriaAtual)
+        .forEach(p => {
+            div.innerHTML += `
+                <div class="card">
+                    <h3>${p.nome}</h3>
+                    <p>${p.cat}</p>
+                    <div class="preco">R$ ${p.preco.toFixed(2)}</div>
+                    <button class="btn-comprar" onclick="addCarrinho(${p.id})">Adicionar</button>
+                </div>
+            `;
+        });
+    }
+
+    function filtrar(cat) {
+        categoriaAtual = cat;
+        carregarProdutos();
+    }
+
+    function addCarrinho(id) {
+        const prod = produtos.find(p => p.id === id);
+        const item = carrinho.find(i => i.id === id);
+        if(item) {
+            item.qtd++;
+        } else {
+            carrinho.push({...prod, qtd:1});
+        }
+        atualizarCarrinho();
+    }
+
+    function atualizarCarrinho() {
+        const div = document.getElementById("itens-carrinho");
+        const totalDiv = document.getElementById("total");
+        if(carrinho.length === 0) {
+            div.innerHTML = "Vazio";
+            totalDiv.innerHTML = "Total: R$ 0.00";
+            return;
+        }
+        div.innerHTML = "";
+        let total = 0;
+        carrinho.forEach(i => {
+            let sub = i.preco * i.qtd;
+            total += sub;
+            div.innerHTML += `<div class="item"><span>${i.qtd}x ${i.nome}</span><span>R$ ${sub.toFixed(2)}</span></div>`;
+        });
+        totalDiv.innerHTML = `Total: R$ ${total.toFixed(2)}`;
+    }
+
+    function finalizar() {
+        if(carrinho.length === 0) {
+            alert("Carrinho vazio!");
+            return;
+        }
+        alert("Compra finalizada! Obrigado por comprar na GameZone!");
+        carrinho = [];
+        atualizarCarrinho();
+    }
+
+    carregarProdutos();
+</script>
+
+</body>
+</html>
